@@ -43,7 +43,7 @@ public class PlayerMovementController implements Controller<GamePad> {
 	private final Player player;
 
 	
-	private float delta = -.5f;
+	private float delta = .5f;
 	private GamePad virtualPad = new GamePad(false);
 	private InputAnimationController playerStateController;
 
@@ -107,7 +107,7 @@ public class PlayerMovementController implements Controller<GamePad> {
 			
 			if (!onGround(spritePosition) && !onGround(otherFoot) && !player.isJumping()) {
 				if (player.yvelocity < 0 && (onGround(headPosition) || onGround(otherShoulder))) {//headbutt
-					player.yvelocity = 0.2f;					
+					player.yvelocity = -0.2f;					
 				}
 				sprite.setPosition(sprite.getX(), sprite.getY()
 						+ (player.yvelocity * delta));
@@ -118,7 +118,7 @@ public class PlayerMovementController implements Controller<GamePad> {
 						sprite.setPosition(sprite.getX(), sprite.getY()
 								+ (player.yvelocity * delta));
 					} else {
-						player.yvelocity = .2f;
+						player.yvelocity = -.2f;
 						player.falling();	
 					}
 				} else if (!onGround(spritePosition) && !onGround(otherFoot)) {
@@ -169,9 +169,9 @@ public class PlayerMovementController implements Controller<GamePad> {
 
 	private void applyGravity() {
 		if (Math.abs(player.yvelocity) < 1.0) {
-			player.yvelocity += .8f;
+			player.yvelocity += -.8f;
 		} else {
-			player.yvelocity += .2f;
+			player.yvelocity += -.2f;
 		}
 	}
 
@@ -180,7 +180,7 @@ public class PlayerMovementController implements Controller<GamePad> {
 				position.x
 						/ mTMXTiledMap.getTileWidth()).intValue();
 		int tileY = Float.valueOf(
-				position.y
+				(mTMXTiledMap.getHeight() - position.y)
 						/ mTMXTiledMap.getTileHeight()).intValue();
 		
 		TMXProperties<TMXTileProperty> val = mTMXLayer.getTMXTiles()[tileY][tileX].getTMXTileProperties(mTMXTiledMap);

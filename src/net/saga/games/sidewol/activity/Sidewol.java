@@ -137,7 +137,7 @@ public class Sidewol extends SidewolBaseGameActivity {
         this.mBoundChaseCamera.setBounds(0, 0, this.mTMXTiledMap.getWidth(), this.mTMXTiledMap.getHeight());
         this.mBoundChaseCamera.setBoundsEnabled(true);
 
-        loadTappa();
+        loadTappa(0, this.mTMXTiledMap.getHeight() - 64);
         this.mBoundChaseCamera.setChaseEntity(player);
         player.setOffsetCenterY(0);
 
@@ -164,9 +164,9 @@ public class Sidewol extends SidewolBaseGameActivity {
         return face;
     }
 
-    private void loadTappa() {
+    private void loadTappa(float initialX, float initialY) {
 
-        final PointedSprite face = new PointedSprite(33, 0, 32, 32, this.mTappaTextureRegion,
+        final PointedSprite face = new PointedSprite(initialX, initialY, 32, 32, this.mTappaTextureRegion,
                 new PointF(0, 28),
                 new PointF(0, 4),
                 new PointF(24, 28),
