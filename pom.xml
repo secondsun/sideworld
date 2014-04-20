@@ -18,7 +18,7 @@
 
         <android.avd>19</android.avd>
         <android.platform>19</android.platform>
-        <android.debug>true</android.debug>
+        <android.debug>false</android.debug>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <proguard.skip>true</proguard.skip>
     </properties>
