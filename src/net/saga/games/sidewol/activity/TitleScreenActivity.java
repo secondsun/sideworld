@@ -96,7 +96,7 @@ public class TitleScreenActivity extends SidewolBaseGameActivity implements IOnM
 				}
 			});
 			this.mTMXTiledMap = tmxLoader.loadFromAsset("title.tmx");
-
+                        this.mTMXTiledMap.setOffsetCenter(0, 0);
 			
 		} catch (final TMXLoadException tmxle) {
                     Log.e("TITLE_SCREEN", tmxle.getMessage(), tmxle);
@@ -105,7 +105,8 @@ public class TitleScreenActivity extends SidewolBaseGameActivity implements IOnM
 		mScene.attachChild(this.mTMXTiledMap);
 
 		/* Make the camera not exceed the bounds of the TMXEntity. */
-		this.mBoundChaseCamera.setBounds(0, tmxLayer.getWidth(), 0, tmxLayer.getHeight());
+		this.mBoundChaseCamera.setBoundsEnabled(false);
+		this.mBoundChaseCamera.setBounds(0, 0, this.mTMXTiledMap.getWidth(), this.mTMXTiledMap.getHeight());
 		this.mBoundChaseCamera.setBoundsEnabled(true);
 		
 		this.mMenuScene = this.createMenuScene();

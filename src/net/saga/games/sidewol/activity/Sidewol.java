@@ -1,17 +1,17 @@
 /**
  * Copyright Hoyt Summers Pittman III
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package net.saga.games.sidewol.activity;
 
@@ -23,6 +23,7 @@ import net.saga.games.sidewol.util.controller.InputAnimationController;
 import net.saga.games.sidewol.util.controller.PlayerMovementController;
 import net.saga.games.sidewol.util.controller.ProjectileController;
 import net.saga.games.sidewol.util.updateHandler.ControllableGamepadUpdateHandler;
+import net.saga.games.sidewol.util.updateHandler.TickUpdateHandler;
 import net.saga.games.util.ControllablePointedSprite;
 import net.saga.games.util.Player;
 import net.saga.games.util.PointedSprite;
@@ -55,11 +56,10 @@ public class Sidewol extends SidewolBaseGameActivity {
     /**
      * Called when the activity is first created.
      */
-
     private static final int CAMERA_WIDTH = 480;
     private static final int CAMERA_HEIGHT = 320;
 
-	// ===========================================================
+    // ===========================================================
     // Fields
     // ===========================================================
     private BoundCamera mBoundChaseCamera;
@@ -89,7 +89,7 @@ public class Sidewol extends SidewolBaseGameActivity {
         } else {
 
             throw new RuntimeException("Requires keyboard");
-            
+
         }
 
         return this.mEngine;
@@ -105,7 +105,7 @@ public class Sidewol extends SidewolBaseGameActivity {
         this.mOnScreenControlTexture = new BitmapTextureAtlas(this.getTextureManager(), 256, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this, "onscreen_control_base.png", 0, 0);
         this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this, "onscreen_control_knob.png", 128, 0);
-        
+
         this.mBitmapTextureAtlas.load();
 
     }
@@ -116,32 +116,40 @@ public class Sidewol extends SidewolBaseGameActivity {
         mScene = new Scene();
 
         try {
-            final TMXLoader tmxLoader = new TMXLoader(this, this.mEngine.getTextureManager(), TextureOptions.BILINEAR_PREMULTIPLYALPHA, this.getVertexBufferObjectManager(), new ITMXTilePropertiesListener() {
+            final TMXLoader tmxLoader = new TMXLoader(this.getAssets(), this.mEngine.getTextureManager(), TextureOptions.BILINEAR_PREMULTIPLYALPHA, this.getVertexBufferObjectManager(), new ITMXTilePropertiesListener() {
                 @Override
                 public void onTMXTileWithPropertiesCreated(final TMXTiledMap pTMXTiledMap, final TMXLayer pTMXLayer, final TMXTile pTMXTile, final TMXProperties<TMXTileProperty> pTMXTileProperties) {
 
                 }
             });
             this.mTMXTiledMap = tmxLoader.loadFromAsset("sidewold1.tmx");
+            this.mTMXTiledMap.setOffsetCenter(0, 0);
 
         } catch (final TMXLoadException tmxle) {
             Log.d("Sidewol", tmxle.getMessage(), tmxle);
         }
 
         final TMXLayer tmxLayer = this.mTMXTiledMap.getTMXLayers().get(0);
-        mScene.attachChild(tmxLayer);
+        mScene.attachChild(mTMXTiledMap);
 
         /* Make the camera not exceed the bounds of the TMXEntity. */
-        this.mBoundChaseCamera.setBounds(0, tmxLayer.getWidth(), 0, tmxLayer.getHeight());
+        this.mBoundChaseCamera.setBoundsEnabled(false);
+        this.mBoundChaseCamera.setBounds(0, 0, this.mTMXTiledMap.getWidth(), this.mTMXTiledMap.getHeight());
         this.mBoundChaseCamera.setBoundsEnabled(true);
 
         loadTappa();
         this.mBoundChaseCamera.setChaseEntity(player);
+        player.setOffsetCenterY(0);
+
         this.player.addController(new PlayerMovementController(tmxLayer, mTMXTiledMap, this.player));
         this.player.addController(new InputAnimationController(this.player));
         this.player.addController(new ProjectileController(this.mScene, loadShot()));
 
-		//mEngine.registerUpdateHandler(new TickUpdateHandler(new ArrayList<ControllablePointedSprite>() {{add(Sidewol.this.player);}}));
+        mEngine.registerUpdateHandler(new TickUpdateHandler(new ArrayList<ControllablePointedSprite>() {
+            {
+                add(Sidewol.this.player);
+            }
+        }));
         mEngine.registerUpdateHandler(new ControllableGamepadUpdateHandler(gamePad, new ArrayList<ControllablePointedSprite>() {
             {
                 add(Sidewol.this.player);
@@ -184,6 +192,5 @@ public class Sidewol extends SidewolBaseGameActivity {
     public EngineOptions onCreateEngineOptions() {
         return null;
     }
-
 
 }
