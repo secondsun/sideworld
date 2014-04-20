@@ -102,7 +102,7 @@ public class TitleScreenActivity extends SidewolBaseGameActivity implements IOnM
                     Log.e("TITLE_SCREEN", tmxle.getMessage(), tmxle);
 		}
 		final TMXLayer tmxLayer = this.mTMXTiledMap.getTMXLayers().get(0);
-		mScene.attachChild(tmxLayer);
+		mScene.attachChild(this.mTMXTiledMap);
 
 		/* Make the camera not exceed the bounds of the TMXEntity. */
 		this.mBoundChaseCamera.setBounds(0, tmxLayer.getWidth(), 0, tmxLayer.getHeight());
